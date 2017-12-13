@@ -1,0 +1,18 @@
+In this repo, I try different methods of trying to find a descent direction and take the largest step in that direction. To do this, I try
+
+1) Use one third of the dataset of SGD, one third to find the gradient, and the other third to find a learning rate that optimizes the loss function on the last third of the dataset given the gradient calculated in the second third of the dataset.
+
+2) Use half the dataset to find a gradient and use the other half to find a learning rate that optimizes the loss function on the second half of the dataset
+
+3) Play around with how many examples to use to find the gradient and how many more to use to find the learning rate
+
+4) For each batch, find the gradient, and then find the second derivative in the terms of the learning rate and update using Newton's Method
+
+All these 4 methods were tried on MNIST and CIFAR10.
+
+The fourth method worked the best for MNIST but does not do as well for CIFAR10 (both in accuracy and time). This probably has to do most of the samples being very similar in MNIST that finding a local (sample) optimal does not hurt the overall performance. However, there is enough variation in CIFAR10 that finding the optimal for a small sample hurts the overall performance. This method got about 96% in one iteration and was about twice as slow as using SGD. The performance is similar to using Adam for one iteration except that Adam is twice as fast.
+
+The fourth method was 6 times slower for CIFAR10. Intuitively, the different should have been a factor of 3 (FP + BP, FP + BP and then BP of first derivative). This might have to do with the amount of memory increasing enough that it doesn't scale as well anymore. The method that did best for CIFAR10 was the first method. This probably has to do with the fact of using a more global gradient.
+
+Finding the gradient of the whole dataset and then finding the best learning rate for that did not work that well since it is similar to the trade off of using batch GD and SGD.
+
